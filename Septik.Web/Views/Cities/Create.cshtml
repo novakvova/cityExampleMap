@@ -1,0 +1,86 @@
+﻿@model Septik.Web.Models.CityAddEditVM
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Додати місто</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-5">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @Html.HiddenFor(x => x.Id)
+            @*<div class="form-group">
+            <label asp-for="Id" class="control-label"></label>
+            <input asp-for="Id" class="form-control" />
+            <span asp-validation-for="Id" class="text-danger"></span>
+        </div>*@
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" name="file" id="file">
+                <label class="custom-file-label" for="customFile">Оберіть фото міста</label>
+            </div>
+            <br />
+            <br />
+            @Html.HiddenFor(x => x.Lat)
+            @Html.HiddenFor(x => x.Lng)
+            <div class="form-group">
+                <input type="submit" value="Створити магазин" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+    <div class="col-md-7">
+        @*<h2>Позначте точну на карті вашого міста</h2>*@
+        <div id="map" class="w-100 h-100"></div>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
+    <script>
+        var lat = 50.618778, lng = 26.258798;
+        let $Lat = $("#Lat");
+        let $Lng = $("#Lng");
+        $Lat.val(lat);
+        $Lng.val(lng);
+        var map = L.map('map').setView([lat, lng], 13);
+
+        var marker = L.marker([lat, lng],
+            { title: "MyPoint", alt: "The Big I", draggable: true }).addTo(map)
+            .bindPopup('Шаг Академія');
+
+        marker.on('dragend', function () {
+            console.log("Hello ", marker.getLatLng());
+            $Lat.val(marker.getLatLng().lat);
+            $Lng.val(marker.getLatLng().lng);
+            //var coord = String(marker.getLatLng()).split(',');
+            //console.log(coord);
+            //var lat = coord[0].split('(');
+            //console.log(lat);
+            //var lng = coord[1].split(')');
+            //console.log(lng);
+            //marker.bindPopup("Moved to: " + lat[1] + ", " + lng[0] + ".");
+        });
+
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        
+            //.openPopup();
+    </script>
+}
