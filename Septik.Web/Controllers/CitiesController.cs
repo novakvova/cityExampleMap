@@ -54,25 +54,26 @@ namespace Septik.Web.Controllers
         // POST: CitiesController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(CityAddEditVM cityAddEdit, IFormFile file)
+        public async Task<ActionResult> Create(CityAddEditVM cityAddEdit, 
+            string [] cityImages)
         {
             try
             {
-                string extension;
-                extension = Path.GetExtension(file.FileName);
-                //string f
-                string name = Path.GetRandomFileName()+ extension;
-                var path = Path.Combine(
-                 Directory.GetCurrentDirectory(), "Uploads", name);
-                using (var stream = new FileStream(path, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
+                //string extension;
+                //extension = Path.GetExtension(file.FileName);
+                ////string f
+                //string name = Path.GetRandomFileName()+ extension;
+                //var path = Path.Combine(
+                // Directory.GetCurrentDirectory(), "Uploads", name);
+                //using (var stream = new FileStream(path, FileMode.Create))
+                //{
+                //    await file.CopyToAsync(stream);
+                //}
 
-                var entity = _mapper.Map<City>(cityAddEdit);
-                entity.Image = name;
-                _context.Cities.Add(entity);
-                _context.SaveChanges();
+                //var entity = _mapper.Map<City>(cityAddEdit);
+                //entity.Image = name;
+                //_context.Cities.Add(entity);
+                //_context.SaveChanges();
 
                 return RedirectToAction(nameof(Index));
             }

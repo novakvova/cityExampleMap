@@ -11,6 +11,15 @@
         "dist/leaflet.css",
         "dist/images/*"
       ]
+    },
+    {
+      "provider": "unpkg",
+      "library": "cropperjs@1.5.7",
+      "destination": "wwwroot/lib/cropperjs/",
+      "files": [
+        "dist/cropper.min.css",
+        "dist/cropper.min.js"
+      ]
     }
   ]
 }
