@@ -15,6 +15,16 @@ namespace Septik.Web.MappingConfig
             // Add as many of these lines as you need to map your objects
             CreateMap<City, CityAddEditVM>();
             CreateMap<CityAddEditVM, City>();
+
+            CreateMap<City, CityItemVM>()
+                .ForMember(dest =>
+                    dest.Image,
+                    opt => opt.MapFrom(src => "/images/"+src.Image));
+
+            CreateMap<City, CityDetailsVM>()
+                .ForMember(dest =>
+                    dest.Image,
+                    opt => opt.MapFrom(src => "/images/" + src.Image));
         }
     }
 }

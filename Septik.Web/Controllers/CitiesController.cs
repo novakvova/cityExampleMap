@@ -28,13 +28,21 @@ namespace Septik.Web.Controllers
         // GET: CitiesController
         public ActionResult Index()
         {
-            return View();
+            var cities = _context.Cities.AsQueryable(); 
+            var dto = _mapper.Map<IEnumerable<CityItemVM>>(cities);
+            return View(dto);
         }
 
         // GET: CitiesController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var entity = _context.Cities.SingleOrDefault(c => c.Id == id);
+            if(entity != null)
+            {
+                var model = _mapper.Map<CityDetailsVM>(entity);
+                return View(model);
+            }
+            return NotFound();
         }
 
         // GET: CitiesController/Create
