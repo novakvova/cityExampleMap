@@ -15,5 +15,6 @@ namespace Septik.Web.Data
         }
 
         public DbSet<City> Cities { get; set; }
+        public DbSet<CityImage> CityImages { get; set; }
     }
 }

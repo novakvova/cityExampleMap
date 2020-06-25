@@ -10,11 +10,14 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-6">
-            <img src="@Model.Image" width="400" alt="Фото" />
+            @foreach (var item in Model.Images)
+            {
+                <img src="@item" width="400" alt="Фото" />
+            }
         </dt>
         <dd class="col-sm-6">
             <h2>На карті</h2>
-            <div id="map" class="w-100 h-100"></div>
+            <div id="map" class="w-100" style="height: 400px;"></div>
         </dd>
 
     </dl>

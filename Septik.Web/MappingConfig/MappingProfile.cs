@@ -14,17 +14,21 @@ namespace Septik.Web.MappingConfig
         {
             // Add as many of these lines as you need to map your objects
             CreateMap<City, CityAddEditVM>();
+                
+
             CreateMap<CityAddEditVM, City>();
 
             CreateMap<City, CityItemVM>()
                 .ForMember(dest =>
                     dest.Image,
-                    opt => opt.MapFrom(src => "/images/"+src.Image));
+                    opt => opt.MapFrom(src => src.CityImages
+                        .Select(i => "/images/" + i.Name).First()));
 
             CreateMap<City, CityDetailsVM>()
                 .ForMember(dest =>
-                    dest.Image,
-                    opt => opt.MapFrom(src => "/images/" + src.Image));
+                    dest.Images,
+                    opt => opt.MapFrom(src => src.CityImages
+                        .Select(i=> "/images/" + i.Name).ToArray()));
         }
     }
 }

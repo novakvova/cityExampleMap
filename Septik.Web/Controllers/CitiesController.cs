@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Septik.Web.Data;
 using Septik.Web.Data.Entities;
+using Septik.Web.Helpers;
 using Septik.Web.Models;
 
 namespace Septik.Web.Controllers
@@ -28,7 +31,14 @@ namespace Septik.Web.Controllers
         // GET: CitiesController
         public ActionResult Index()
         {
-            var cities = _context.Cities.AsQueryable(); 
+            var cities = _context.Cities.Include(c=>c.CityImages);
+                //Select(c=> new CityItemVM
+                //{
+                //    Id=c.Id,
+                //    Image="/images/"+c.CityImages.First().Name,
+                //    Name=c.Name
+                //})
+                //.ToList(); 
             var dto = _mapper.Map<IEnumerable<CityItemVM>>(cities);
             return View(dto);
         }
@@ -36,7 +46,9 @@ namespace Septik.Web.Controllers
         // GET: CitiesController/Details/5
         public ActionResult Details(int id)
         {
-            var entity = _context.Cities.SingleOrDefault(c => c.Id == id);
+            var entity = _context.Cities
+                .Include(c=>c.CityImages)
+                .SingleOrDefault(c => c.Id == id);
             if(entity != null)
             {
                 var model = _mapper.Map<CityDetailsVM>(entity);
@@ -54,11 +66,30 @@ namespace Septik.Web.Controllers
         // POST: CitiesController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(CityAddEditVM cityAddEdit, 
+        public ActionResult Create(CityAddEditVM cityAddEdit, 
             string [] cityImages)
         {
             try
             {
+                var entity = _mapper.Map<City>(cityAddEdit);
+                entity.Image = "no image";
+                _context.Cities.Add(entity);
+                _context.SaveChanges();
+                foreach (var image in cityImages)
+                {
+                    string name = Path.GetRandomFileName() + ".jpg";
+                    var bmp = image.Split(',')[1].ConvertBase64ToBitmap();
+                    var path = Path.Combine(Directory.GetCurrentDirectory(), 
+                        "Uploads", name);
+                    bmp.Save(path, ImageFormat.Jpeg);
+                    CityImage cityImage = new CityImage
+                    {
+                        CityId = entity.Id,
+                        Name = name
+                    };
+                    _context.CityImages.Add(cityImage);
+                    _context.SaveChanges();
+                }
                 //string extension;
                 //extension = Path.GetExtension(file.FileName);
                 ////string f
